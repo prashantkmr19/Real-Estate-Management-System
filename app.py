@@ -58,7 +58,7 @@ def create_property():
             return jsonify({"error": "Missing required fields"}), 400
 
         # Create new property instance
-        new_property = PropertyModel(
+        new_property = models.PropertyModel(
             name=request_data["name"],
             address=request_data["address"],
             location=request_data["location"],
