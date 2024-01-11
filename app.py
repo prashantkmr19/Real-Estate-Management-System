@@ -1,9 +1,7 @@
 from functools import wraps
-from flask import Flask, render_template, abort, redirect, url_for, flash, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, current_user, LoginManager, login_user, login_required, logout_user
+from flask import Flask, render_template, abort, redirect, url_for, flash, request, jsonify
+from flask_login import current_user, LoginManager, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from urllib.parse import urlparse
 from db import db
 from forms import RegisterForm, LoginForm
 from context_processors import inject_globals
@@ -48,6 +46,36 @@ def admin_only(f):
 def admin():
     return "<h1> This is Admin Portal</h1>"
 
+@app.route("/properties", methods=["POST"])
+@login_required  # Assuming you have authentication set up
+def create_property():
+    try:
+        request_data = request.get_json()  # Assuming JSON data
+
+        # Validate required fields
+        required_fields = ["name", "address", "location", "features"]
+        if not all(field in request_data for field in required_fields):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Create new property instance
+        new_property = PropertyModel(
+            name=request_data["name"],
+            address=request_data["address"],
+            location=request_data["location"],
+            features=request_data["features"]
+        )
+
+        # Add to database and commit
+        db.session.add(new_property)
+        db.session.commit()
+
+        return jsonify({"message": "Property created successfully!", "id": new_property.id}), 201
+
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of errors
+        return jsonify({"error": "Failed to create property"}), 500
+
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -78,8 +106,8 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/tenant-management", methods=["GET"])
-def tenant_management():
+@app.route("/tenants")
+def get_all_tenants():
     tenants = models.TenantModel.query.all()
     return render_template("tenant_management.html", tenants=tenants)
 
