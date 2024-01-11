@@ -1,0 +1,56 @@
+{% include "header.html" %}
+
+<!-- Page Header-->
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/home-bg.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="site-heading">
+          <h1 style="font-size: 3em; font-family: 'Caveat', cursive;">
+              Welcome to your dream house:
+          </h1>
+          <span class="subheading"
+          style="font-size: 1.5em; font-family: 'Caveat', cursive;">
+              Where Ideas Come to Life!
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-7">
+      <!-- Post preview-->
+      {% for property in properties %}
+      <div class="property-preview">
+        <a href="{{ url_for('property_view', property_id=property.id) }}">
+          <h2 class="property-name">{{ property.name }}</h2>
+          <h3 class="property-address">{{ property.address }}</h3>
+            <h4 class="property-location">{{ property.location }}</h4>
+            <h5 class="property-address">{{ property.features }}</h5>
+        </a>
+        <ul>
+            {% for unit in property.units %}
+                <li>Rent: {{ unit.rent_cost }}, Type: {{ unit.unit_type }}</li>
+            {% endfor %}
+        </ul>
+          </div>
+      {% endfor %}
+
+      <!-- New Post -->
+      <!-- TODO: Only show Create Post button if user id is 1 (admin user) -->
+
+      <!-- Pager-->
+      <div class="d-flex justify-content-end mb-4">
+        <a class="btn btn-secondary text-uppercase" href="#!">Older Properties →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Management</title>
+</head>
+<body>
+    <h1>Tenant Management</h1>
+    {% for tenant in tenants %}
+        <h2>{{ tenant.name }}</h2>
+        <p>{{ tenant.address }}</p>
+        <p>{{ tenant.document_proofs }}</p>
+        <ul>
+            {% for lease in tenant.leases %}
+                <li>Agreement End Date: {{ lease.agreement_end_date }}, Monthly Rent Date: {{ lease.monthly_rent_date }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</body>
+</html>
